@@ -1,0 +1,22 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before-install:
+  - docker build -t rleee/test-container -f .
+
+script:
+  - docker run -e CI=true rleee/test-container npm run test
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-2'
+  app: 'docker-nginx'
+  env: 'DockerNginx-env'
+  bucket_name: 'elasticbeanstalk-us-east-2-976188958134'
+  bucket_path: 'docker-example-app'
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
